@@ -1,0 +1,19 @@
+# Core LangChain packages (compatible versions)
+langchain-core==1.0.5
+langchain==1.0.7
+langchain-community==0.4.1
+langchain-experimental==0.4.0
+langchain-google-genai==3.0.3
+langchain-classic==1.0.0
+
+# UI and utilities
+streamlit==1.49.1
+python-dotenv==1.0.0
+
+# Vector store and embeddings
+faiss-cpu==1.12.0
+numpy==2.3.4
+
+# PDF processing
+PyMuPDF==1.26.3
+
