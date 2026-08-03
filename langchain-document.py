@@ -1,19 +1,12 @@
 import fitz
 import glob
 import os
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_experimental.text_splitter import SemanticChunker
-from langchain.schema import Document
-from dotenv import load_dotenv
-from langchain_community.embeddings import JinaEmbeddings
 from langchain_community.vectorstores import FAISS
-from numpy import dot
-load_dotenv()
 
-JINA_API = os.getenv("JINA_API_KEY")
-text_embeddings = JinaEmbeddings(
-    jina_api_key=JINA_API, model_name="jina-embeddings-v2-base-en"
-)
+import providers
+
+text_embeddings = providers.get_embeddings()
 
 
 semantic_chunker = SemanticChunker(text_embeddings, breakpoint_threshold_type="percentile")
@@ -71,9 +64,11 @@ def create_document(pdf_files):
             print(f"Error reading {pdf}: {e}")
     return all_documents
 
-# Open the PDF
-pdf_path = "C:/Users/HMK/Desktop/ByteCorp-Assignment/pdf/*.pdf"
+# Open the PDFs, relative to this file so the script runs on any machine
+pdf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pdf", "*.pdf")
 pdf_files = glob.glob(pdf_path)
+if not pdf_files:
+    raise SystemExit(f"No PDFs found at {pdf_path}")
 all_documents = create_document(pdf_files)
 print(f"Total documents created: {len(all_documents)}")
 
