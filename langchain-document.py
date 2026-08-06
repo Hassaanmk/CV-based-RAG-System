@@ -65,7 +65,8 @@ def create_document(pdf_files):
     return all_documents
 
 # Open the PDFs, relative to this file so the script runs on any machine
-pdf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pdf", "*.pdf")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+pdf_path = os.path.join(BASE_DIR, "pdf", "*.pdf")
 pdf_files = glob.glob(pdf_path)
 if not pdf_files:
     raise SystemExit(f"No PDFs found at {pdf_path}")
@@ -81,5 +82,5 @@ elapsed_time = time.time() - start_time
 print(f"Embeddings created and FAISS index built in {elapsed_time:.2f} seconds")
 
 print("Saving vector store to disk...")
-vector_store.save_local("faiss_index")
+vector_store.save_local(os.path.join(BASE_DIR, "faiss_index"))
 print("✓ FAISS vector store created and saved to 'faiss_index' directory")

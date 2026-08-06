@@ -11,3 +11,7 @@
 venv/
 __pycache__/
 *.pyc
+
+# Streamlit local secrets — never commit real keys
+.streamlit/secrets.toml
+.env.bak.local

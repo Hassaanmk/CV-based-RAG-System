@@ -31,16 +31,33 @@ DEFAULT_EMBED_MODELS = {
 }
 
 
+def _secret(name):
+    """Read a Streamlit Cloud secret, if we happen to be running under Streamlit.
+
+    Streamlit Community Cloud normally exports secrets as environment variables
+    too, but reading st.secrets directly makes the app work either way — and
+    keeps this module importable from plain scripts, where streamlit may not be
+    initialised.
+    """
+    try:
+        import streamlit as st
+
+        return st.secrets[name]
+    except Exception:
+        return None
+
+
 def _env(name, default=None):
-    value = os.getenv(name)
+    value = os.getenv(name) or _secret(name)
     return value if value else default
 
 
 def _require(key_name):
-    key = os.getenv(key_name)
+    key = _env(key_name)
     if not key:
         raise RuntimeError(
-            f"{key_name} is not set. Copy .env.example to .env and fill it in."
+            f"{key_name} is not set. Copy .env.example to .env and fill it in "
+            f"(or add it to the app's Streamlit secrets)."
         )
     return key
 

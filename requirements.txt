@@ -1,6 +1,4 @@
 # Core LangChain packages
-# langchain-core is pinned to 1.5.3 because langchain-huggingface requires it;
-# the rest of the stack was verified against that version.
 langchain-core==1.5.3
 langchain==1.0.7
 langchain-community==0.4.1
@@ -11,17 +9,12 @@ langchain-classic==1.0.0
 # LLM providers (both have a free, no-credit-card tier)
 langchain-groq==1.0.0
 
-# Local embeddings for EMBED_PROVIDER=local — no API key needed.
-# Pulls in torch (~3.5 GB with the CUDA wheels). For a CPU-only install:
+# Local embeddings (EMBED_PROVIDER=local) are optional and NOT installed here:
+# they pull in torch (~2.5 GB with the CUDA wheels), which does not fit the
+# Streamlit Community Cloud build or its memory limit. To use them locally:
 #   pip install torch --index-url https://download.pytorch.org/whl/cpu
-# before installing this file.
-langchain-huggingface==1.2.2
-sentence-transformers==5.6.1
-
-# Unused by the RAG pipeline, but Streamlit's file watcher walks every
-# transformers submodule on startup and the vision ones import torchvision.
-# Without it the console fills with ModuleNotFoundError tracebacks.
-torchvision==0.28.0
+#   pip install langchain-huggingface==1.2.2 sentence-transformers==5.6.1 torchvision==0.28.0
+# then set EMBED_PROVIDER=local and rebuild the index.
 
 # UI and utilities
 streamlit==1.49.1

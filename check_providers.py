@@ -6,7 +6,11 @@ Each check is independent, so a missing key for a provider you are not using
 only fails that one line.
 """
 
+import os
+
 import providers
+
+INDEX_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "faiss_index")
 
 
 def check(label, fn):
@@ -48,7 +52,7 @@ def check_index():
     from langchain_community.vectorstores import FAISS
 
     store = FAISS.load_local(
-        "faiss_index", providers.get_embeddings(), allow_dangerous_deserialization=True
+        INDEX_DIR, providers.get_embeddings(), allow_dangerous_deserialization=True
     )
     dim = store.index.d
     return f"{store.index.ntotal} chunks, {dim} dimensions"

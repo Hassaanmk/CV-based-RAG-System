@@ -41,7 +41,7 @@ Set these in `.env`:
 
 | Variable | Values | Default |
 | --- | --- | --- |
-| `LLM_PROVIDER` | `gemini`, `groq` | `gemini` |
+| `LLM_PROVIDER` | `gemini`, `groq` | `gemini` (repo uses `groq`) |
 | `EMBED_PROVIDER` | `jina`, `local` | `jina` |
 | `RERANK_PROVIDER` | `jina`, `none` | `jina` |
 | `LLM_MODEL` | any model id for the chosen provider | per-provider default |
@@ -57,16 +57,37 @@ GROQ_API_KEY=...
 ### Running with no embedding key at all
 
 `EMBED_PROVIDER=local` uses sentence-transformers on the CPU, so Groq is then
-the only key you need. This is the setup the committed index is built for:
-MiniLM at 384 dimensions, no reranker.
+the only key you need. It is not part of the default install, because it pulls
+in torch (~2.5 GB with the CUDA wheels) and does not fit Streamlit Community
+Cloud's build or memory limits:
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install langchain-huggingface==1.2.2 sentence-transformers==5.6.1 torchvision==0.28.0
+```
 
 Switching embedding models always means rebuilding the index, because the
 dimensions have to match:
 
 ```bash
-# .env: EMBED_PROVIDER=local  and  RERANK_PROVIDER=none
+# .env: EMBED_PROVIDER=local
 python langchain-document.py
 ```
+
+## Deploying to Streamlit Community Cloud
+
+The committed `faiss_index/` is built with Jina embeddings at 768 dimensions,
+which is what the deployed app expects — no torch, no model download at boot.
+
+1. Push the repo to GitHub (`faiss_index/` and `pdf/` must be committed).
+2. Create the app at https://share.streamlit.io, main file `main.py`.
+3. Paste the contents of `.streamlit/secrets.toml.example` into the app's
+   **Secrets** box, with your real keys.
+
+`providers.py` reads configuration from environment variables first and falls
+back to `st.secrets`, so the same code runs locally off `.env` and on Cloud off
+secrets. `.streamlit/config.toml` sets the theme and hides Streamlit's error
+details from visitors.
 
 ## Files
 
