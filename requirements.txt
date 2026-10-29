@@ -1,10 +1,20 @@
-# Core LangChain packages (compatible versions)
-langchain-core==1.0.5
+# Core LangChain packages
+langchain-core==1.5.3
 langchain==1.0.7
 langchain-community==0.4.1
 langchain-experimental==0.4.0
 langchain-google-genai==3.0.3
 langchain-classic==1.0.0
+
+# LLM providers (both have a free, no-credit-card tier)
+langchain-groq==1.0.0
+
+# Local embeddings (EMBED_PROVIDER=local) are optional and NOT installed here:
+# they pull in torch (~2.5 GB with the CUDA wheels), which does not fit the
+# Streamlit Community Cloud build or its memory limit. To use them locally:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install langchain-huggingface==1.2.2 sentence-transformers==5.6.1 torchvision==0.28.0
+# then set EMBED_PROVIDER=local and rebuild the index.
 
 # UI and utilities
 streamlit==1.49.1
@@ -16,4 +26,3 @@ numpy==2.3.4
 
 # PDF processing
 PyMuPDF==1.26.3
-
